@@ -2,7 +2,7 @@ from random import randint
 from beautifultable import BeautifulTable
 
 FACTOR_MAX_SIZE = 20
-A0, A1, A2, A3 = 1, 2, 3, 4
+A0, A1, A2, A3 = [randint(1, 50) for _ in range(4)]
 
 x1 = [randint(0, FACTOR_MAX_SIZE) for _ in range(8)]
 x2 = [randint(0, FACTOR_MAX_SIZE) for _ in range(8)]
