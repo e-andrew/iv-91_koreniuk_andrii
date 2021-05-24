@@ -4,7 +4,7 @@ from math import ceil, floor, sqrt
 from numpy.linalg import det
 import criterions as cr
 from beautifultable import BeautifulTable
-
+import time
 """Довірча ймовірність p = 0.95 (критерій значимості 0.05)"""
 variant = {"n": 114, "x1min": -25, "x1max": 75, "x2min": 25, "x2max": 65, "x3min": 25, "x3max": 40}
 N = 4
@@ -41,6 +41,7 @@ def check_model_suitability():
 
     #Перевірка критерія Кохрена
     S2_dis = [0, 0, 0, 0]
+    start_time = time.perf_counter()
     for i in range(m):
         S2_dis[0] += (y_1[i] - y_average[0]) ** 2
         S2_dis[1] += (y_2[i] - y_average[1]) ** 2
@@ -53,8 +54,12 @@ def check_model_suitability():
     f1 = m - 1
     f2 = N
     if not cr.check_kohren(f1, f2, Gp):
+        finish_time = time.perf_counter()
+        print(f"Час перевірки однорідності дисперсії: {finish_time - start_time}")
         return False
 
+    finish_time = time.perf_counter()
+    print(f"Час перевірки однорідності дисперсії: {finish_time - start_time}")
     # Пошук коефіцієнтів
     mx1, mx2, mx3, my = sum(nx1) / N, sum(nx2) / N, sum(nx3) / N, sum(y_average) / N
     a11, a22, a33 = 0, 0, 0
