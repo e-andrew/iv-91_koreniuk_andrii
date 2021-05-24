@@ -3,7 +3,7 @@ from math import ceil, floor, sqrt
 from numpy.linalg import det
 import criterions as cr
 import logs
-
+import time
 
 """Довірча ймовірність p = 0.95 (критерій значимості 0.05)"""
 variant = dict()
@@ -99,13 +99,17 @@ def linear_model_without_interaction():
     S2_dis = []
     f1 = 0
     f2 = 0
+    start_time = 0
+    finish_time = 0
 
     def check_uniformity_of_dispersion(m):
         nonlocal y_average
         nonlocal S2_dis
         nonlocal f1
         nonlocal f2
+        nonlocal start_time
 
+        start_time = time.perf_counter()
         y_average = [sum(y_1)/m, sum(y_2)/m, sum(y_3)/m, sum(y_4)/m]
 
         S2_dis = [0, 0, 0, 0]
@@ -124,6 +128,8 @@ def linear_model_without_interaction():
         return cr.check_kohren(f1, f2, Gp)
 
     while not check_uniformity_of_dispersion(m):
+        finish_time = time.perf_counter()
+        print(logs.get_text(24, [finish_time - start_time]))
         print(logs.get_text(12, []))
         y_1.append(randint(y_min, y_max))
         y_2.append(randint(y_min, y_max))
@@ -133,6 +139,8 @@ def linear_model_without_interaction():
         print(logs.get_text(12, []))
         print(logs.get_text(2, [N, K, m]))
 
+    finish_time = time.perf_counter()
+    print(logs.get_text(24, [finish_time - start_time]))
     # Пошук коефіцієнтів
     print(logs.get_text(11, []))
     parameters = [m, N, nx1, nx2, nx3, {0: y_1, 1: y_2, 2: y_3, 3: y_4}]
@@ -189,6 +197,7 @@ def linear_model_without_interaction():
     logs.show_checking_of_linear_rationed_plan_without_interaction(*parameters)
 
     # Перевірка критерія Стьюдента
+    start_time = time.perf_counter()
     S2B = sum(S2_dis) / N
     S2_B = S2B / (N * m)
     S_B = sqrt(S2_B)
@@ -205,11 +214,13 @@ def linear_model_without_interaction():
             B[i] = 0
             A[i] = 0
             d -= 1
-
+    finish_time = time.perf_counter()
+    print(logs.get_text(25, [finish_time - start_time]))
     print(logs.get_text(14, [round(el, 4) for el in A]))
     print(logs.get_text(15, [round(el, 4) for el in B]))
 
     # Перевірка критерія Фішера
+    start_time = time.perf_counter()
     y_for_phisher = [0 for _ in range(N)]
     for i in range(N):
         y_for_phisher[i] = nx0[i]*A[0] + nx1[i]*A[1] + nx2[i]*A[2] + nx3[i]*A[3]
@@ -219,7 +230,9 @@ def linear_model_without_interaction():
     S2ad = m * S2ad / (N - d)
     f4 = N - d
     Fp = S2ad / S2B
+    finish_time = time.perf_counter()
     print(logs.get_text(18, [f3, f4, Fp]))
+    print(logs.get_text(26, [finish_time - start_time]))
     ext_data = [N, y_average, A, B]
     return cr.check_phisher(f3, f4, Fp)
 
@@ -257,13 +270,17 @@ def linear_model_with_interaction():
     S2_dis = []
     f1 = 0
     f2 = 0
+    start_time = 0
+    finish_time = 0
 
     def check_uniformity_of_dispersion(m):
         nonlocal y_average
         nonlocal S2_dis
         nonlocal f1
         nonlocal f2
+        nonlocal start_time
 
+        start_time = time.perf_counter()
         y_average = [sum(y_1) / m, sum(y_2) / m, sum(y_3) / m, sum(y_4) / m,
                      sum(y_5) / m, sum(y_6) / m, sum(y_7) / m, sum(y_8) / m]
 
@@ -287,6 +304,8 @@ def linear_model_with_interaction():
         return cr.check_kohren(f1, f2, Gp)
 
     while not check_uniformity_of_dispersion(m):
+        finish_time = time.perf_counter()
+        print(logs.get_text(24, [finish_time - start_time]))
         print(logs.get_text(12, []))
         y_1.append(randint(y_min, y_max))
         y_2.append(randint(y_min, y_max))
@@ -299,6 +318,8 @@ def linear_model_with_interaction():
         m += 1
         print(logs.get_text(2, [N, K, m]))
 
+    finish_time = time.perf_counter()
+    print(logs.get_text(24, [finish_time - start_time]))
     # Пошук коефіцієнтів
     print(logs.get_text(11, []))
     parameters = [m, N, nx1, nx2, nx3, {0: y_1, 1: y_2, 2: y_3, 3: y_4, 4: y_5, 5: y_6, 6: y_7, 7: y_8}]
@@ -516,6 +537,7 @@ def linear_model_with_interaction():
     logs.show_checking_of_linear_rationed_plan_with_interaction(*parameters)
 
     # Перевірка критерія Стьюдента
+    start_time = time.perf_counter()
     S2B = sum(S2_dis) / N
     S2_B = S2B / (N * m)
     S_B = sqrt(S2_B)
@@ -532,10 +554,13 @@ def linear_model_with_interaction():
             B[i] = 0
             A[i] = 0
             d -= 1
-
+    finish_time = time.perf_counter()
+    print(logs.get_text(25, [finish_time - start_time]))
     print(logs.get_text(16, [round(el, 4) for el in A]))
     print(logs.get_text(17, [round(el, 4) for el in B]))
+
     # Перевірка критерія Фішера
+    start_time = time.perf_counter()
     y_for_phisher = [0 for _ in range(N)]
     for i in range(N):
         y_for_phisher[i] = A[0] * nx0[i]  + A[1] * nx1[i] + A[2] * nx2[i] + A[3] * nx3[i] + A[4] * nx1[i] * nx2[i] + \
@@ -546,8 +571,9 @@ def linear_model_with_interaction():
     S2ad = m * S2ad / (N - d)
     f4 = N - d
     Fp = S2ad / S2B
-
+    finish_time = time.perf_counter()
     print(logs.get_text(18, [f3, f4, Fp]))
+    print(logs.get_text(26, [finish_time - start_time]))
     ext_data = [N, y_average, A, B]
     return cr.check_phisher(f3, f4, Fp)
 
