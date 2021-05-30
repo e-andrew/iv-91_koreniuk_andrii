@@ -5,9 +5,11 @@ from square_central_orthogonal import SquareCentralOrthogonalModel
 from configuration import *
 from copy import deepcopy
 import logs
+import time
 
 x = list()
 nx = list()
+all_cfs = 0
 
 
 def get_factor_lines(x, N):
@@ -34,6 +36,7 @@ def extend_view(step, view, N):
 def linear_model_without_interaction():
     global x
     global nx
+    global all_cfs
     logs.comment(0, [])
     N, K, m = 4, 4, 2
     logs.comment(3, [N, K, m])
@@ -74,6 +77,7 @@ def linear_model_without_interaction():
     logs.comment(14, [experiment.f3, [round(el, 4) for el in experiment.t]])
     logs.comment(15, [round(el, 4) for el in lm_without.A])
     logs.comment(16, [round(el, 4) for el in lm_without.B])
+    all_cfs += experiment.d
 
     # Перевірка критерія Фішера
     is_suitable = experiment.check_fisher(lm_without, nx_lines)
@@ -98,6 +102,7 @@ def linear_model_without_interaction():
 def linear_model_with_interaction():
     global x
     global nx
+    global all_cfs
     logs.comment(1, [])
     N, K, m = 8, 8, 2
     logs.comment(3, [N, K, m])
@@ -149,6 +154,7 @@ def linear_model_with_interaction():
     logs.comment(14, [experiment.f3, [round(el, 4) for el in experiment.t]])
     logs.comment(17, [round(el, 4) for el in lm_with.A])
     logs.comment(18, [round(el, 4) for el in lm_with.B])
+    all_cfs += experiment.d
 
     # Перевірка критерія Фішера
     is_suitable = experiment.check_fisher(lm_with, nx_lines)
@@ -173,6 +179,7 @@ def linear_model_with_interaction():
 def square_central_orthogonal_model():
     global x
     global nx
+    global all_cfs
     logs.comment(2, [])
     N, K, m = 14, 11, 2
     logs.comment(3, [N, K, m])
@@ -225,6 +232,7 @@ def square_central_orthogonal_model():
     logs.comment(14, [experiment.f3, [round(el, 4) for el in experiment.t]])
     logs.comment(19, [round(el, 4) for el in sq_co.A])
     logs.comment(20, [round(el, 4) for el in sq_co.B])
+    all_cfs += experiment.d
 
     # Перевірка критерія Фішера
     is_suitable = experiment.check_fisher(sq_co, nx_lines)
@@ -246,15 +254,29 @@ def square_central_orthogonal_model():
     return is_suitable
 
 
+def cfs_counting(time):
+    global all_cfs
+    print(f"За час {time} згенеровано {all_cfs} значимих коефіцієнтів.")
+
+
 def main():
+    start_time = time.perf_counter()
     while True:
-        if linear_model_without_interaction():
+        linear_model_without_interaction()
+        finish_time = time.perf_counter()
+        if (finish_time - start_time) > 2:
+            cfs_counting(finish_time-start_time)
             break
-        elif linear_model_with_interaction():
+        linear_model_with_interaction()
+        finish_time = time.perf_counter()
+        if (finish_time - start_time) > 2:
+            cfs_counting(finish_time-start_time)
             break
-        elif square_central_orthogonal_model():
+        square_central_orthogonal_model()
+        finish_time = time.perf_counter()
+        if (finish_time - start_time) > 2:
+            cfs_counting(finish_time-start_time)
             break
-        logs.comment(26, [])
 
 
 if __name__ == "__main__":
