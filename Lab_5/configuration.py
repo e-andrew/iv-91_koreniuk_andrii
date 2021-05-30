@@ -46,3 +46,5 @@ tp_nx0 = [1, 1, 1, 1, 1, 1, 1]
 tp_nx1 = [tp_x1[i] * del_x1 + x1_average for i in range(7)]
 tp_nx2 = [tp_x2[i] * del_x2 + x2_average for i in range(7)]
 tp_nx3 = [tp_x3[i] * del_x3 + x3_average for i in range(7)]
+
+q = 0.05

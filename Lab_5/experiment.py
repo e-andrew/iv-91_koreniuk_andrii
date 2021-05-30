@@ -7,6 +7,7 @@ import criterion_tables as ct
 class Experiment:
     m = 0
     N = 0
+    q = 0
     y_min, y_max = 0, 0
     y = list()
     y_average = list()
@@ -18,14 +19,15 @@ class Experiment:
     d = 0
     s2b = 0
 
-    def __init__(self, y_min, y_max, m, N):
+    def __init__(self, y_min, y_max, m, N, q):
         self.y_min = y_min
         self.y_max = y_max
         self.m = m
         self.N = N
+        self.q = q
 
     def __del__(self):
-        del self.m, self.N, self.y_min, self.y_max
+        del self.m, self.N, self.q, self.y_min, self.y_max
         del self.y, self.y_average, self.S2_dis
         del self.f1, self.f2, self.f3, self.f4
         del self.Gp, self.t, self.Fp, self.d, self.s2b
@@ -87,4 +89,4 @@ class Experiment:
         s2ad = self.m * s2ad / (self.N - self.d)
         self.f4 = self.N - self.d
         self.Fp = s2ad / self.s2b
-        return ct.compare_phisher_with_table_value(self.f3, self.f4, self.Fp)
+        return ct.compare_phisher_with_table_value(self.f3, self.f4, self.Fp) and self.q <= 0.1

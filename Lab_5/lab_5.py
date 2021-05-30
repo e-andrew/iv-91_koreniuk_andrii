@@ -47,7 +47,7 @@ def linear_model_without_interaction():
     nx_lines = get_factor_lines(nx, N)
 
     # Виконання експерименту
-    experiment = Experiment(y_min, y_max, m, N)
+    experiment = Experiment(y_min, y_max, m, N, q)
     lm_without = LinearWithoutInteractionModel(K, N)
     experiment.do()
 
@@ -122,7 +122,7 @@ def linear_model_with_interaction():
     extend_view(2, nx_views, N)
 
     # Виконання експерименту
-    experiment = Experiment(y_min, y_max, m, N)
+    experiment = Experiment(y_min, y_max, m, N, q)
     lm_with = LinearWithInteractionModel(K, N)
     experiment.do()
 
@@ -199,7 +199,7 @@ def square_central_orthogonal_model():
     extend_view(3, nx_views, N)
 
     # Виконання експерименту
-    experiment = Experiment(y_min, y_max, m, N)
+    experiment = Experiment(y_min, y_max, m, N, q)
     sq_co = SquareCentralOrthogonalModel(K, N)
     experiment.do()
 
